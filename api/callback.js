@@ -47,12 +47,13 @@ export default async function handler(request) {
   const payload = { sub: member.user?.id, exp: Date.now() + 1000 * 60 * 60 * 24 };
   const session = await sign(payload, SESSION_SECRET);
 
-  const res = Response.redirect(new URL('/', url), 302);
-  res.headers.append(
-    'Set-Cookie',
-    `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
-  );
-  return res;
+  return new Response(null, {
+  status: 302,
+  headers: {
+    'Location': new URL('/', url).toString(),
+    'Set-Cookie': `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
+  }
+});
 }
 
 function fail(url, reason) {
