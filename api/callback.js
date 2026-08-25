@@ -7,12 +7,16 @@ export default async function handler(request) {
   const code = url.searchParams.get('code');
   if (!code) return fail(url, 'missing_code');
 
+  const cookieHeader = request.headers.get('cookie') || '';
+
   // CSRF check: the state Discord echoes back must match the nonce login.html set before redirecting
   const stateParam = url.searchParams.get('state');
-  const stateCookie = readCookie(request.headers.get('cookie') || '', 'oauth_state');
+  const stateCookie = readCookie(cookieHeader, 'oauth_state');
   if (!stateParam || !stateCookie || stateParam !== stateCookie) {
     return fail(url, 'state_mismatch');
   }
+
+  const rememberMe = readCookie(cookieHeader, 'remember_me') === '1';
 
   const {
     DISCORD_CLIENT_ID,
@@ -50,17 +54,19 @@ export default async function handler(request) {
   // 3. only staff-role holders get through
   if (!roles.includes(DISCORD_STAFF_ROLE_ID)) return fail(url, 'not_staff');
 
-  // 4. issue a signed 24h session cookie and send them to the real site
-  const payload = { sub: member.user?.id, exp: Date.now() + 1000 * 60 * 60 * 24 };
+  // 4. issue a signed session cookie: 24h normally, 30d if "remember me" was checked
+  const maxAgeSeconds = rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24;
+  const payload = { sub: member.user?.id, exp: Date.now() + maxAgeSeconds * 1000 };
   const session = await sign(payload, SESSION_SECRET);
 
   const headers = new Headers();
   headers.set('Location', new URL('/', url).toString());
   headers.append(
     'Set-Cookie',
-    `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
+    `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAgeSeconds}`
   );
   headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0; SameSite=Lax; Secure');
+  headers.append('Set-Cookie', 'remember_me=; Path=/; Max-Age=0; SameSite=Lax; Secure');
 
   return new Response(null, {
     status: 302,
