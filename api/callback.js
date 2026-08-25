@@ -7,6 +7,13 @@ export default async function handler(request) {
   const code = url.searchParams.get('code');
   if (!code) return fail(url, 'missing_code');
 
+  // CSRF check: the state Discord echoes back must match the nonce login.html set before redirecting
+  const stateParam = url.searchParams.get('state');
+  const stateCookie = readCookie(request.headers.get('cookie') || '', 'oauth_state');
+  if (!stateParam || !stateCookie || stateParam !== stateCookie) {
+    return fail(url, 'state_mismatch');
+  }
+
   const {
     DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET,
@@ -47,17 +54,22 @@ export default async function handler(request) {
   const payload = { sub: member.user?.id, exp: Date.now() + 1000 * 60 * 60 * 24 };
   const session = await sign(payload, SESSION_SECRET);
 
-  return new Response(null, {
-  status: 302,
-  headers: {
-    'Location': new URL('/', url).toString(),
-    'Set-Cookie': `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
-  }
-});
+  const res = Response.redirect(new URL('/', url), 302);
+  res.headers.append(
+    'Set-Cookie',
+    `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
+  );
+  res.headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0; SameSite=Lax; Secure');
+  return res;
+}
+
+function readCookie(header, name) {
+  const match = header.match(new RegExp('(?:^|; )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 function fail(url, reason) {
-  return Response.redirect(new URL(`/login.html?error=${reason}`, url), 302);
+  return Response.redirect(new URL(`/login?error=${reason}`, url), 302);
 }
 
 async function sign(payload, secret) {
