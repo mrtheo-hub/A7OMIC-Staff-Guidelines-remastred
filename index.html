@@ -246,23 +246,6 @@
     .lightbox-close { top: 14px; right: 14px; width: 36px; height: 36px; font-size: 18px; }
   }
 
-  /* ROSTER (who holds this role) */
-  .roster-trigger { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 12.5px; font-weight: 500; color: var(--mint-pale); background: none; border: none; padding: 0; cursor: pointer; font-family: var(--font-body); transition: gap 0.2s var(--ease), color 0.2s; }
-  .roster-trigger:hover { gap: 10px; color: var(--mint); }
-  .roster-modal { position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center; background: rgba(2,4,7,0.88); backdrop-filter: blur(8px); padding: 24px; opacity: 0; transition: opacity 0.25s var(--ease); }
-  .roster-modal.open { display: flex; opacity: 1; }
-  .roster-panel { position: relative; max-width: 420px; width: 100%; max-height: 80vh; overflow-y: auto; border-radius: 18px; border: 1px solid var(--border); background: rgba(6,16,28,0.97); backdrop-filter: blur(20px); padding: 28px; transform: scale(0.95); transition: transform 0.25s var(--ease); }
-  .roster-modal.open .roster-panel { transform: scale(1); }
-  .roster-panel h3 { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--white); margin-bottom: 4px; padding-right: 24px; }
-  .roster-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
-  .roster-list { display: flex; flex-direction: column; gap: 4px; }
-  .roster-member { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 10px; transition: background 0.2s; }
-  .roster-member:hover { background: rgba(45,212,191,0.08); }
-  .roster-member img { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
-  .roster-member span { font-size: 13.5px; color: var(--white); }
-  .roster-empty, .roster-loading, .roster-error { font-size: 13px; color: var(--muted); text-align: center; padding: 24px 0; }
-  .roster-close { position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: rgba(8,20,34,0.7); color: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.25s var(--ease); }
-  .roster-close:hover { border-color: var(--teal); color: var(--mint); transform: rotate(90deg); }
 </style>
 </head>
 <body>
@@ -771,7 +754,7 @@
   </div>
 
   <div class="role-cards">
-    <div class="role-card reveal" data-role-id="REPLACE_ROLE_ID_SUPPORT">
+    <div class="role-card reveal">
       <div class="role-number">01</div>
       <div class="role-badge">Support</div>
       <div class="role-title" data-en="Support Representative" data-id="Support Representative">Support Representative</div>
@@ -783,10 +766,9 @@
         <div class="duty-item" data-en="Escalate issues that cannot be resolved at Support level to a PR Associate or the appropriate division." data-id="Eskalasikan masalah yang tidak dapat diselesaikan di level Support ke PR Associate atau divisi yang tepat.">Escalate issues that cannot be resolved at Support level to a PR Associate or the appropriate division.</div>
         <div class="duty-item" data-en="Maintain a friendly, professional, and informative tone in every interaction." data-id="Pertahankan nada yang ramah, profesional, dan informatif dalam setiap interaksi.">Maintain a friendly, professional, and informative tone in every interaction.</div>
       </div>
-      <button class="roster-trigger" onclick="openRoster(this)">See who's in this role &rarr;</button>
     </div>
 
-    <div class="role-card reveal" data-role-id="REPLACE_ROLE_ID_PR_ASSOCIATE">
+    <div class="role-card reveal">
       <div class="role-number">02</div>
       <div class="role-badge">PR</div>
       <div class="role-title" data-en="Public Relations Associate" data-id="Public Relations Associate">Public Relations Associate</div>
@@ -797,10 +779,9 @@
         <div class="duty-item" data-en="Handle escalated cases and tickets passed up from Support." data-id="Tangani kasus yang dieskalasi dan tiket yang diteruskan dari Support.">Handle escalated cases and tickets passed up from Support.</div>
         <div class="duty-item" data-en="Report patterns, recurring issues, or concerns to the Head of Public Relations." data-id="Laporkan pola, masalah yang berulang, atau kekhawatiran ke Head of Public Relations.">Report patterns, recurring issues, or concerns to the Head of Public Relations.</div>
       </div>
-      <button class="roster-trigger" onclick="openRoster(this)">See who's in this role &rarr;</button>
     </div>
 
-    <div class="role-card reveal" data-role-id="REPLACE_ROLE_ID_HEAD_OF_PR">
+    <div class="role-card reveal">
       <div class="role-number">03</div>
       <div class="role-badge">HoPR</div>
       <div class="role-title" data-en="Head of Public Relations" data-id="Head of Public Relations">Head of Public Relations</div>
@@ -813,10 +794,9 @@
         <div class="duty-item" data-en="Report division status and developments to the RDOM during evaluations, or proactively for urgent matters." data-id="Laporkan status dan perkembangan divisi ke RDOM saat evaluasi, atau secara proaktif untuk hal-hal mendesak.">Report division status and developments to the RDOM during evaluations, or proactively for urgent matters.</div>
         <div class="duty-item" data-en="Coordinate with the Community Manager and RDOM to ensure alignment across divisions." data-id="Koordinasikan dengan Community Manager dan RDOM untuk memastikan keselarasan lintas divisi.">Coordinate with the Community Manager and RDOM to ensure alignment across divisions.</div>
       </div>
-      <button class="roster-trigger" onclick="openRoster(this)">See who's in this role &rarr;</button>
     </div>
 
-    <div class="role-card reveal" data-role-id="REPLACE_ROLE_ID_COMMUNITY_MANAGER">
+    <div class="role-card reveal">
       <div class="role-number">04</div>
       <div class="role-badge">CM</div>
       <div class="role-title" data-en="Community Manager" data-id="Community Manager">Community Manager</div>
@@ -829,10 +809,9 @@
         <div class="duty-item" data-en="Design and drive programs or initiatives that maintain community engagement and activity." data-id="Rancang dan dorong program atau inisiatif yang menjaga keterlibatan dan aktivitas komunitas.">Design and drive programs or initiatives that maintain community engagement and activity.</div>
         <div class="duty-item" data-en="Ensure the server environment remains positive, constructive, and aligned with community values." data-id="Pastikan lingkungan server tetap positif, konstruktif, dan sesuai dengan nilai-nilai komunitas.">Ensure the server environment remains positive, constructive, and aligned with community values.</div>
       </div>
-      <button class="roster-trigger" onclick="openRoster(this)">See who's in this role &rarr;</button>
     </div>
 
-    <div class="role-card reveal" data-role-id="REPLACE_ROLE_ID_RDOM">
+    <div class="role-card reveal">
       <div class="role-number">05</div>
       <div class="role-badge">RDOM</div>
       <div class="role-title" data-en="Recruitment &amp; Division Operations Manager" data-id="Recruitment &amp; Division Operations Manager">Recruitment &amp; Division Operations Manager</div>
@@ -847,10 +826,9 @@
         <div class="duty-item" data-en="Monitor daily activity across all divisions, ensuring responsibilities are consistently carried out." data-id="Pantau aktivitas harian di semua divisi, pastikan tanggung jawab dijalankan secara konsisten.">Monitor daily activity across all divisions, ensuring responsibilities are consistently carried out.</div>
         <div class="duty-item" data-en="Report organizational conditions to the Executive Director regularly, or whenever decisions need to be escalated." data-id="Laporkan kondisi organisasi ke Executive Director secara berkala, atau kapan pun keputusan perlu dieskalasi.">Report organizational conditions to the Executive Director regularly, or whenever decisions need to be escalated.</div>
       </div>
-      <button class="roster-trigger" onclick="openRoster(this)">See who's in this role &rarr;</button>
     </div>
 
-    <div class="role-card reveal" data-role-id="REPLACE_ROLE_ID_EXECUTIVE_DIRECTOR">
+    <div class="role-card reveal">
       <div class="role-number">06</div>
       <div class="role-badge">Executive Director</div>
       <div class="role-title" data-en="Executive Director" data-id="Executive Director">Executive Director</div>
@@ -863,7 +841,6 @@
         <div class="duty-item" data-en="Provide final approval on major decisions, structural changes, new policies, or high-impact ProDeTe actions." data-id="Berikan persetujuan akhir untuk keputusan besar, perubahan struktural, kebijakan baru, atau tindakan ProDeTe berdampak tinggi.">Provide final approval on major decisions, structural changes, new policies, or high-impact ProDeTe actions.</div>
         <div class="duty-item" data-en="Participate, alongside the RDOM and Owner, in recruitment for RDOM and Executive Director positions." data-id="Berpartisipasi, bersama RDOM dan Owner, dalam rekrutmen untuk posisi RDOM dan Executive Director.">Participate, alongside the RDOM and Owner, in recruitment for RDOM and Executive Director positions.</div>
       </div>
-      <button class="roster-trigger" onclick="openRoster(this)">See who's in this role &rarr;</button>
     </div>
   </div>
 </section>
@@ -881,14 +858,6 @@
   </div>
 </div>
 
-<div class="roster-modal" id="rosterModal" onclick="if(event.target===this)closeRoster()">
-  <div class="roster-panel">
-    <button class="roster-close" onclick="closeRoster()" aria-label="Close">&times;</button>
-    <h3 id="rosterTitle"></h3>
-    <div class="roster-sub">Current staff holding this role</div>
-    <div class="roster-list" id="rosterList"></div>
-  </div>
-</div>
 
 <script>
   const revealObserver = new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');revealObserver.unobserve(entry.target);}});},{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
@@ -1244,36 +1213,8 @@
   onScroll();
   function openLightbox(src,caption){const lb=document.getElementById('lightbox');document.getElementById('lightboxImg').src=src;document.getElementById('lightboxCaption').textContent=caption||'';lb.classList.add('open');document.body.style.overflow='hidden';}
   function closeLightbox(){const lb=document.getElementById('lightbox');lb.classList.remove('open');document.body.style.overflow='';}
-  async function openRoster(btn){
-    const card=btn.closest('.role-card');
-    const roleId=card.dataset.roleId;
-    const roleName=card.querySelector('.role-title').textContent;
-    const modal=document.getElementById('rosterModal');
-    const list=document.getElementById('rosterList');
-    document.getElementById('rosterTitle').textContent=roleName;
-    list.innerHTML='<div class="roster-loading">Loading...</div>';
-    modal.classList.add('open');
-    document.body.style.overflow='hidden';
-    try{
-      const res=await fetch('/api/roster?role='+encodeURIComponent(roleId));
-      if(!res.ok)throw new Error('bad response');
-      const members=await res.json();
-      if(!Array.isArray(members)||members.length===0){
-        list.innerHTML='<div class="roster-empty">No one currently holds this role.</div>';
-        return;
-      }
-      list.innerHTML=members.map(m=>{
-        const safeName=escapeHtml(m.name||'Unknown');
-        const safeAvatar=escapeHtml(m.avatar||'');
-        return '<div class="roster-member"><img src="'+safeAvatar+'" alt=""><span>'+safeName+'</span></div>';
-      }).join('');
-    }catch(e){
-      list.innerHTML='<div class="roster-error">Couldn\'t load the roster right now.</div>';
-    }
-  }
-  function closeRoster(){document.getElementById('rosterModal').classList.remove('open');document.body.style.overflow='';}
   function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLightbox();closeRoster();}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLightbox();}});
 
   function toggleMobileMenu() {
     const btn = document.getElementById('hamburgerBtn');
