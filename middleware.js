@@ -12,7 +12,7 @@ export default async function middleware(request) {
     return; // valid session -> let the static index.html through
   }
 
-  return Response.redirect(new URL('/login.html', request.url), 302);
+  return Response.redirect(new URL('/login', request.url), 302);
 }
 
 function readCookie(header, name) {
