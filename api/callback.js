@@ -69,7 +69,12 @@ function readCookie(header, name) {
 }
 
 function fail(url, reason) {
-  return Response.redirect(new URL(`/login?error=${reason}`, url), 302);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      'Location': new URL(/login?error=${reason}, url).toString()
+    }
+  });
 }
 
 async function sign(payload, secret) {
