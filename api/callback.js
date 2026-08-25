@@ -54,13 +54,18 @@ export default async function handler(request) {
   const payload = { sub: member.user?.id, exp: Date.now() + 1000 * 60 * 60 * 24 };
   const session = await sign(payload, SESSION_SECRET);
 
-  const res = Response.redirect(new URL('/', url), 302);
-  res.headers.append(
+  const headers = new Headers();
+  headers.set('Location', new URL('/', url).toString());
+  headers.append(
     'Set-Cookie',
     `staff_session=${session}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
   );
-  res.headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0; SameSite=Lax; Secure');
-  return res;
+  headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0; SameSite=Lax; Secure');
+
+  return new Response(null, {
+    status: 302,
+    headers,
+  });
 }
 
 function readCookie(header, name) {
@@ -72,9 +77,8 @@ function fail(url, reason) {
   return new Response(null, {
     status: 302,
     headers: {
-      // Backtick mengapit /login?error=${reason}
-      'Location': new URL(`/login?error=${reason}`, url).toString()
-    }
+      'Location': new URL(`/login?error=${reason}`, url).toString(),
+    },
   });
 }
 
@@ -90,9 +94,11 @@ async function sign(payload, secret) {
   const sigBuf = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payloadB64));
   return `${payloadB64}.${toBase64UrlFromBytes(new Uint8Array(sigBuf))}`;
 }
+
 function toBase64Url(str) {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
+
 function toBase64UrlFromBytes(bytes) {
   return toBase64Url(String.fromCharCode(...bytes));
 }
