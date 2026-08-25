@@ -72,6 +72,7 @@ function fail(url, reason) {
   return new Response(null, {
     status: 302,
     headers: {
+      // Backtick mengapit /login?error=${reason}
       'Location': new URL(`/login?error=${reason}`, url).toString()
     }
   });
