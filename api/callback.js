@@ -72,7 +72,7 @@ function fail(url, reason) {
   return new Response(null, {
     status: 302,
     headers: {
-      'Location': new URL(/login?error=${reason}, url).toString()
+      'Location': new URL(`/login?error=${reason}`, url).toString()
     }
   });
 }
