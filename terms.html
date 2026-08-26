@@ -9,17 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #04060a; --navy: #0a2540; --navy-mid: #123a5e; --teal: #2dd4bf;
-    --mint: #95e9d6; --mint-pale: #ddf6f1; --white: #eafdf9; --muted: #93aab3;
-    --border: rgba(45,212,191,0.2); --card-bg: rgba(8,20,34,0.7);
+    --bg: #020203; --navy: #0f2e37; --navy-mid: #103c56; --teal: #237d97;
+    --mint: #3caccd; --mint-pale: #cfe2e7; --white: #eaf5f7; --muted: #a8bcc2;
+    --border: rgba(35, 125, 151,0.2); --card-bg: rgba(15, 46, 55,0.7);
     --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--white); font-family: var(--font-body); min-height: 100vh; }
   body::before {
     content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background: radial-gradient(circle at 15% 0%, rgba(18,58,94,0.45) 0%, transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(149,233,214,0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 15% 0%, rgba(16, 60, 86,0.45) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(60, 172, 205,0.1) 0%, transparent 50%);
   }
   .wrap { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 56px 24px 100px; }
   a.back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 13px; margin-bottom: 28px; transition: color 0.2s; }
@@ -28,9 +28,9 @@
   h1 { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
   .updated { font-size: 12.5px; color: var(--muted); margin-bottom: 40px; }
   h2 { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--mint-pale); margin: 34px 0 12px; }
-  p { font-size: 14.5px; line-height: 1.75; color: rgba(234,253,249,0.88); margin-bottom: 12px; }
+  p { font-size: 14.5px; line-height: 1.75; color: rgba(234, 245, 247,0.88); margin-bottom: 12px; }
   ul { margin: 10px 0 12px 20px; }
-  li { font-size: 14.5px; line-height: 1.75; color: rgba(234,253,249,0.88); margin-bottom: 6px; }
+  li { font-size: 14.5px; line-height: 1.75; color: rgba(234, 245, 247,0.88); margin-bottom: 6px; }
   strong { color: var(--white); }
   .note { margin-top: 40px; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 13px; color: var(--muted); line-height: 1.65; }
 </style>
