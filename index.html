@@ -33,7 +33,7 @@
   }
   .page { position: relative; z-index: 1; }
   .animated-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background: var(--bg); }
-  .animated-bg::before, .animated-bg::after { content: ''; position: absolute; border-radius: 50%; filter: blur(30px); }
+  .animated-bg::before, .animated-bg::after { content: ''; position: absolute; border-radius: 50%; filter: blur(22px); will-change: transform; }
   .animated-bg::before { width: 70vw; height: 70vw; left: -18vw; top: -22vw; background: radial-gradient(circle, rgba(16, 60, 86,0.55) 0%, transparent 65%); animation: driftA 26s ease-in-out infinite alternate; }
   .animated-bg::after { width: 60vw; height: 60vw; right: -16vw; bottom: -18vw; background: radial-gradient(circle, rgba(60, 172, 205,0.16) 0%, transparent 65%); animation: driftB 22s ease-in-out infinite alternate; }
   @keyframes driftA { from{ transform: translate(0,0) scale(1);} to{ transform: translate(6vw,4vw) scale(1.12);} }
@@ -81,7 +81,7 @@
   /* SECTIONS */
   .section { min-height: 100vh; padding: 120px 40px 80px; max-width: 1100px; margin: 0 auto; display: none; }
   .section.active { display: block; }
-  .section.active.in { animation: fadeUp 0.5s var(--ease) both; }
+  .section.active.in { animation: fadeUp 0.38s var(--ease) both; }
   .section-header { margin-bottom: 60px; }
   .back-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer; margin-bottom: 32px; transition: color 0.2s, transform 0.2s; background: none; border: none; font-family: var(--font-body); padding: 0; }
   .back-btn:hover { color: var(--mint-pale); transform: translateX(-3px); }
@@ -165,7 +165,7 @@
   @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
   /* REVEAL ON SCROLL / SECTION ENTER */
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s var(--ease), transform 0.55s var(--ease); transition-delay: calc(var(--i, 0) * 55ms); }
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.32s var(--ease), transform 0.32s var(--ease); transition-delay: calc(var(--i, 0) * 30ms); }
   .reveal.in-view { opacity: 1; transform: translateY(0); }
 
   /* HAMBURGER */
@@ -861,7 +861,7 @@
 
 <script>
   const revealObserver = new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');revealObserver.unobserve(entry.target);}});},{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
-  function armReveal(container){const items=container.querySelectorAll('.reveal');items.forEach((item,i)=>{item.classList.remove('in-view');item.style.setProperty('--i', i % 14);revealObserver.unobserve(item);revealObserver.observe(item);});}
+  function armReveal(container){const items=container.querySelectorAll('.reveal');items.forEach((item,i)=>{item.classList.remove('in-view');item.style.setProperty('--i', i % 8);revealObserver.unobserve(item);revealObserver.observe(item);});}
   function activateSection(el,id){document.querySelectorAll('.section').forEach(s=>{s.classList.remove('active');s.classList.remove('in');});el.classList.add('active');void el.offsetWidth;el.classList.add('in');updateNav(id);window.scrollTo({top:0,behavior:'smooth'});armReveal(el);}
   function showHome(){activateSection(document.getElementById('home'),'home');}
   function showSection(id){document.querySelectorAll('.detail-block').forEach(d=>d.style.display='none');activateSection(document.getElementById(id),id);}
@@ -1207,7 +1207,8 @@
 
 };
 
-  function onScroll(){const st=window.scrollY||document.documentElement.scrollTop;const sh=document.documentElement.scrollHeight-window.innerHeight;const pct=sh>0?Math.min(100,(st/sh)*100):0;const bar=document.getElementById('scrollProgress');if(bar)bar.style.width=pct+'%';document.documentElement.style.setProperty('--parallax',(st*0.06)+'px');}
+  let __scrollTicking=false;
+  function onScroll(){if(__scrollTicking)return;__scrollTicking=true;requestAnimationFrame(()=>{const st=window.scrollY||document.documentElement.scrollTop;const sh=document.documentElement.scrollHeight-window.innerHeight;const pct=sh>0?Math.min(100,(st/sh)*100):0;const bar=document.getElementById('scrollProgress');if(bar)bar.style.width=pct+'%';document.documentElement.style.setProperty('--parallax',(st*0.06)+'px');__scrollTicking=false;});}
   window.addEventListener('scroll',onScroll,{passive:true});
   window.addEventListener('resize',onScroll);
   onScroll();
