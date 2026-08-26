@@ -13,6 +13,7 @@ export default async function handler(request) {
   const stateParam = url.searchParams.get('state');
   const stateCookie = readCookie(cookieHeader, 'oauth_state');
   if (!stateParam || !stateCookie || stateParam !== stateCookie) {
+    await sendAlert('oauth_state_mismatch', 'A callback request arrived with a missing or non-matching OAuth state, possible forged login link.', request);
     return fail(url, 'state_mismatch');
   }
 
@@ -47,11 +48,15 @@ export default async function handler(request) {
     `https://discord.com/api/users/@me/guilds/${DISCORD_GUILD_ID}/member`,
     { headers: { Authorization: `Bearer ${access_token}` } }
   );
-  if (!memberRes.ok) return fail(url, 'not_member');
+  if (!memberRes.ok) {
+    await sendAlert('login_not_a_member', 'A Discord account completed login but is not a member of the A7OMIC server.', request);
+    return fail(url, 'not_member');
+  }
   const member = await memberRes.json();
   const roles = member.roles || [];
 
-  // 3. only staff-role holders get through
+  // 3. only staff-role holders get through (not alerted: a curious member with no staff
+  // role trying the login button is expected traffic, not a security signal on its own)
   if (!roles.includes(DISCORD_STAFF_ROLE_ID)) return fail(url, 'not_staff');
 
   // 4. issue a signed session cookie: 24h normally, 30d if "remember me" was checked
@@ -107,4 +112,32 @@ function toBase64Url(str) {
 
 function toBase64UrlFromBytes(bytes) {
   return toBase64Url(String.fromCharCode(...bytes));
+}
+
+// --- security alerting: posts to a Discord webhook, never throws, no-ops if unset ---
+async function sendAlert(event, detail, request) {
+  const webhook = process.env.ALERT_WEBHOOK_URL;
+  if (!webhook) return;
+  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+  const ua = (request.headers.get('user-agent') || 'unknown').slice(0, 200);
+  try {
+    await fetch(webhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        embeds: [{
+          title: `Security alert: ${event}`,
+          description: detail,
+          color: 0xef4444,
+          fields: [
+            { name: 'IP', value: ip, inline: true },
+            { name: 'Time', value: new Date().toISOString(), inline: true },
+            { name: 'User-Agent', value: ua, inline: false },
+          ],
+        }],
+      }),
+    });
+  } catch {
+    // an alert failing to send must never block or break the actual request
+  }
 }
