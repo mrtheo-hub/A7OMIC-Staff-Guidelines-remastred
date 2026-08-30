@@ -2,10 +2,21 @@
 // Discord sends the user here after they approve the login.
 export const config = { runtime: 'edge' };
 
+const SCANNER_UA = /sqlmap|nikto|nmap|masscan|nessus|acunetix|w3af|dirbuster|gobuster|wpscan|burp|zaproxy/i;
+
 export default async function handler(request) {
   const url = new URL(request.url);
+
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    await sendAlert('unexpected_method', `A ${request.method} request hit /api/callback instead of GET.`, request, 'medium');
+  }
+  flagScannerUA(request);
+
   const code = url.searchParams.get('code');
-  if (!code) return fail(url, 'missing_code');
+  if (!code) {
+    await sendAlert('callback_missing_code', 'Someone hit /api/callback directly with no code param, likely manual probing rather than a real Discord redirect.', request, 'low');
+    return fail(url, 'missing_code');
+  }
 
   const cookieHeader = request.headers.get('cookie') || '';
 
@@ -13,8 +24,32 @@ export default async function handler(request) {
   const stateParam = url.searchParams.get('state');
   const stateCookie = readCookie(cookieHeader, 'oauth_state');
   if (!stateParam || !stateCookie || stateParam !== stateCookie) {
-    await sendAlert('oauth_state_mismatch', 'A callback request arrived with a missing or non-matching OAuth state, possible forged login link.', request);
+    await sendAlert('oauth_state_mismatch', 'A callback request arrived with a missing or non-matching OAuth state, possible forged login link.', request, 'high');
     return fail(url, 'state_mismatch');
+  }
+
+  // Turnstile: the widget alone proves nothing, only this server-side check does.
+  // A missing/failing token here despite the button being gated on having one client-side
+  // means someone skipped the widget entirely, worth an alert, not just a quiet redirect.
+  const turnstileToken = readCookie(cookieHeader, 'turnstile_token');
+  if (!turnstileToken) {
+    await sendAlert('turnstile_missing', 'Callback reached with no Turnstile token at all, the widget was likely bypassed.', request, 'high');
+    return fail(url, 'turnstile_failed');
+  }
+  const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+  const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      secret: process.env.TURNSTILE_SECRET_KEY,
+      response: turnstileToken,
+      remoteip: clientIp,
+    }),
+  });
+  const tsResult = await tsRes.json();
+  if (!tsResult.success) {
+    await sendAlert('turnstile_failed', `Turnstile siteverify rejected the token: ${(tsResult['error-codes'] || []).join(', ') || 'unknown reason'}.`, request, 'high');
+    return fail(url, 'turnstile_failed');
   }
 
   const rememberMe = readCookie(cookieHeader, 'remember_me') === '1';
@@ -40,7 +75,12 @@ export default async function handler(request) {
       redirect_uri: DISCORD_REDIRECT_URI,
     }),
   });
-  if (!tokenRes.ok) return fail(url, 'token_exchange');
+  if (!tokenRes.ok) {
+    // a valid-looking code that Discord rejects is consistent with a reused,
+    // expired, or fabricated code, worth knowing about even though it's rare
+    await sendAlert('token_exchange_failed', `Discord rejected the authorization code (HTTP ${tokenRes.status}). Possible replayed or forged code.`, request, 'high');
+    return fail(url, 'token_exchange');
+  }
   const { access_token } = await tokenRes.json();
 
   // 2. ask Discord "is this person a member of our guild, and what are their roles"
@@ -49,7 +89,7 @@ export default async function handler(request) {
     { headers: { Authorization: `Bearer ${access_token}` } }
   );
   if (!memberRes.ok) {
-    await sendAlert('login_not_a_member', 'A Discord account completed login but is not a member of the A7OMIC server.', request);
+    await sendAlert('login_not_a_member', 'A Discord account completed login but is not a member of the A7OMIC server.', request, 'high');
     return fail(url, 'not_member');
   }
   const member = await memberRes.json();
@@ -72,6 +112,7 @@ export default async function handler(request) {
   );
   headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0; SameSite=Lax; Secure');
   headers.append('Set-Cookie', 'remember_me=; Path=/; Max-Age=0; SameSite=Lax; Secure');
+  headers.append('Set-Cookie', 'turnstile_token=; Path=/; Max-Age=0; SameSite=Lax; Secure');
 
   return new Response(null, {
     status: 302,
@@ -91,6 +132,13 @@ function fail(url, reason) {
       'Location': new URL(`/login?error=${reason}`, url).toString(),
     },
   });
+}
+
+function flagScannerUA(request) {
+  const ua = request.headers.get('user-agent') || '';
+  if (SCANNER_UA.test(ua)) {
+    sendAlert('scanner_useragent_detected', `Request User-Agent matched a known scanning-tool signature: "${ua.slice(0, 120)}".`, request, 'medium');
+  }
 }
 
 async function sign(payload, secret) {
@@ -115,22 +163,24 @@ function toBase64UrlFromBytes(bytes) {
 }
 
 // --- security alerting: posts to a Discord webhook, never throws, no-ops if unset ---
-async function sendAlert(event, detail, request) {
+async function sendAlert(event, detail, request, severity) {
   const webhook = process.env.ALERT_WEBHOOK_URL;
   if (!webhook) return;
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   const ua = (request.headers.get('user-agent') || 'unknown').slice(0, 200);
+  const color = severity === 'high' ? 0xef4444 : severity === 'medium' ? 0xf59e0b : 0x94a3b8;
   try {
     await fetch(webhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         embeds: [{
-          title: `Security alert: ${event}`,
+          title: `Security alert (${severity || 'info'}): ${event}`,
           description: detail,
-          color: 0xef4444,
+          color,
           fields: [
             { name: 'IP', value: ip, inline: true },
+            { name: 'Method', value: request.method, inline: true },
             { name: 'Time', value: new Date().toISOString(), inline: true },
             { name: 'User-Agent', value: ua, inline: false },
           ],
