@@ -203,6 +203,13 @@
     turnstileToken = null;
     updateButtonState();
   }
+  setTimeout(() => {
+    if (typeof turnstile === 'undefined') {
+      const box = document.getElementById('errorBox');
+      box.textContent = 'The verification widget failed to load (network/ad-blocker/CSP issue). Refresh, or contact an admin if it keeps happening.';
+      box.style.display = 'block';
+    }
+  }, 7000);
 
   const agreeCheck = document.getElementById('agreeCheck');
   function updateButtonState() {
