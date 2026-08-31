@@ -79,6 +79,263 @@
   .agree-text a:hover, .check-text a:hover { color: var(--mint); }
   .check-row.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
   #discordBtn { margin-top: 4px; }
+  .turnstile-wrap { margin: 4px 0 16px; text-align: left; }
+  .turnstile-wrap.shake-me { animation: shake 0.3s; }
+  .turnstile-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 8px; opacity: 0.85; }
+
+  /* COOKIE CONSENT */
+  .cookie-modal { position: fixed; inset: 0; z-index: 600; display: none; align-items: center; justify-content: center; background: rgba(2,4,7,0.82); backdrop-filter: blur(6px); padding: 24px; opacity: 0; transition: opacity 0.3s var(--ease); }
+  .cookie-modal.open { display: flex; opacity: 1; }
+  .cookie-panel { position: relative; max-width: 440px; width: 100%; max-height: 86vh; overflow-y: auto; border-radius: 20px; border: 1px solid var(--border); background: rgba(6,16,28,0.98); backdrop-filter: blur(24px); padding: 32px; transform: scale(0.95); transition: transform 0.3s var(--ease); text-align: left; }
+  .cookie-modal.open .cookie-panel { transform: scale(1); }
+  .cookie-panel h2 { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 10px; }
+  .cookie-panel p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+  .cookie-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .cookie-btn { flex: 1; padding: 11px 16px; border-radius: 10px; font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; transition: all 0.2s var(--ease); border: 1px solid var(--border); background: none; color: var(--muted); }
+  .cookie-btn.primary { background: rgba(35, 125, 151,0.16); border-color: var(--teal); color: var(--mint-pale); }
+  .cookie-btn.primary:hover { background: rgba(35, 125, 151,0.26); }
+  .cookie-btn:not(.primary):hover { border-color: var(--teal); color: var(--mint-pale); }
+  .cookie-detail { display: none; }
+  .cookie-detail.open { display: block; }
+  .cookie-simple.hidden { display: none; }
+  .cookie-cat { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); }
+  .cookie-cat:first-of-type { border-top: none; }
+  .cookie-cat-title { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+  .cookie-cat-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; border-radius: 20px; background: rgba(113, 143, 151,0.3); border: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+  .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: all 0.2s var(--ease); }
+  .toggle.on { background: rgba(35, 125, 151,0.35); border-color: var(--teal); }
+  .toggle.on::after { transform: translateX(16px); background: var(--teal); }
+  .toggle.locked { cursor: not-allowed; opacity: 0.7; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-box"><img src="a7omic-logo.png" alt="A7OMIC"></div>
+    <div class="eyebrow">Restricted Access</div>
+    <h1>Staff Login</h1>
+    <p class="sub">This is the A7OMIC staff guidelines portal. Sign in with the Discord account tied to your staff role to continue.</p>
+    <div class="error" id="errorBox"></div>
+    <label class="agree-row">
+      <input type="checkbox" id="agreeCheck">
+      <span class="agree-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg></span>
+      <span class="agree-text">I agree to the <a href="terms">Terms of Service</a> and <a href="privacy">Privacy Policy</a>.</span>
+    </label>
+    <label class="check-row" id="rememberRow">
+      <input type="checkbox" id="rememberCheck">
+      <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg></span>
+      <span class="check-text">Remember me for 30 days</span>
+    </label>
+    <div class="turnstile-wrap" id="turnstileWrap">
+      <div class="turnstile-label">Verification</div>
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAEiJoj2yfWcp76B5" data-theme="dark" data-size="flexible" data-appearance="interactive-only" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
+    </div>
+    <a class="discord-btn locked" id="discordBtn" href="#">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127c-.598.35-1.22.645-1.873.893a.076.076 0 0 0-.041.106c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      Continue with Discord
+    </a>
+    <div class="footnote">Access is limited to accounts holding the staff role in the A7OMIC server.</div>
+  </div>
+
+  <div class="cookie-modal" id="cookieModal">
+    <div class="cookie-panel">
+      <div class="cookie-simple" id="cookieSimple">
+        <h2>Cookie Notice</h2>
+        <p>This site uses cookies to keep you signed in, that's it. One essential cookie runs the login session, a short-lived one protects the login step itself, and an optional one powers "Remember me for 30 days" if you use it. No tracking, no ads, no analytics.</p>
+        <div class="cookie-actions">
+          <button class="cookie-btn" onclick="openCookieDetail()">Cookie Settings</button>
+          <button class="cookie-btn primary" onclick="acceptCookies(true)">Accept</button>
+        </div>
+      </div>
+      <div class="cookie-detail" id="cookieDetail">
+        <h2>Cookie Settings</h2>
+        <p>Exactly two categories exist on this site, nothing else.</p>
+        <div class="cookie-cat">
+          <div>
+            <div class="cookie-cat-title">Essential (session &amp; security)</div>
+            <div class="cookie-cat-desc">Keeps you logged in and protects the Discord login step. The site can't function without these.</div>
+          </div>
+          <div class="toggle on locked"></div>
+        </div>
+        <div class="cookie-cat">
+          <div>
+            <div class="cookie-cat-title">Remember me</div>
+            <div class="cookie-cat-desc">Lets the "Remember me for 30 days" option on this page actually work. Off means you'll need to log in again more often.</div>
+          </div>
+          <div class="toggle on" id="rememberToggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="cookie-actions" style="margin-top:20px;">
+          <button class="cookie-btn primary" style="flex:1;" onclick="saveCookiePrefs()">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // --- fill these in once you've registered the Discord application ---
+  const DISCORD_CLIENT_ID = 'REPLACE_WITH_YOUR_CLIENT_ID';
+  const REDIRECT_URI = window.location.origin + '/api/callback';
+  // ----------------------------------------------------------------------
+
+  function randomState() {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  const state = randomState();
+  document.cookie = `oauth_state=${state}; Path=/; Max-Age=600; SameSite=Lax; Secure`;
+
+  const authorizeUrl = 'https://discord.com/oauth2/authorize?' + new URLSearchParams({
+    client_id: DISCORD_CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+    response_type: 'code',
+    scope: 'identify guilds guilds.members.read',
+    prompt: 'consent',
+    state: state,
+  }).toString();
+  const discordBtn = document.getElementById('discordBtn');
+  discordBtn.href = authorizeUrl;
+
+  let turnstileToken = null;
+  function onTurnstileSuccess(token) {
+    turnstileToken = token;
+    updateButtonState();
+  }
+  function onTurnstileExpired() {
+    turnstileToken = null;
+    updateButtonState();
+  }
+  setTimeout(() => {
+    if (typeof turnstile === 'undefined') {
+      const box = document.getElementById('errorBox');
+      box.textContent = 'The verification widget failed to load (network/ad-blocker/CSP issue). Refresh, or contact an admin if it keeps happening.';
+      box.style.display = 'block';
+    }
+  }, 7000);
+
+  const agreeCheck = document.getElementById('agreeCheck');
+  function updateButtonState() {
+    discordBtn.classList.toggle('locked', !(agreeCheck.checked && turnstileToken));
+  }
+  agreeCheck.addEventListener('change', updateButtonState);
+
+  discordBtn.addEventListener('click', (e) => {
+    if (!agreeCheck.checked) {
+      e.preventDefault();
+      shakeEl(agreeCheck.closest('.agree-row'));
+      return;
+    }
+    if (!turnstileToken) {
+      e.preventDefault();
+      shakeEl(document.getElementById('turnstileWrap'));
+      return;
+    }
+    document.cookie = `turnstile_token=${turnstileToken}; Path=/; Max-Age=280; SameSite=Lax; Secure`;
+    const rememberCheck = document.getElementById('rememberCheck');
+    if (rememberCheck.checked && !rememberCheck.disabled) {
+      document.cookie = 'remember_me=1; Path=/; Max-Age=600; SameSite=Lax; Secure';
+    }
+  });
+  function shakeEl(el) {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = 'shake 0.3s';
+  }
+
+  // --- cookie consent ---
+  function readCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]+)'));
+    return m ? m[1] : null;
+  }
+  function applyRememberAvailability(allowed) {
+    const row = document.getElementById('rememberRow');
+    const box = document.getElementById('rememberCheck');
+    row.classList.toggle('disabled', !allowed);
+    box.disabled = !allowed;
+    if (!allowed) box.checked = false;
+  }
+  function acceptCookies(allowRemember) {
+    document.cookie = `cookie_consent=${allowRemember ? 'all' : 'essential'}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+    document.getElementById('cookieModal').classList.remove('open');
+    applyRememberAvailability(allowRemember);
+  }
+  function openCookieDetail() {
+    document.getElementById('cookieSimple').classList.add('hidden');
+    document.getElementById('cookieDetail').classList.add('open');
+  }
+  function saveCookiePrefs() {
+    const allowRemember = document.getElementById('rememberToggle').classList.contains('on');
+    acceptCookies(allowRemember);
+  }
+  const existingConsent = readCookie('cookie_consent');
+  if (existingConsent) {
+    applyRememberAvailability(existingConsent === 'all');
+  } else {
+    document.getElementById('cookieModal').classList.add('open');
+  }
+
+  const errors = {
+    not_staff: "That Discord account doesn't have the staff role yet. Ask an admin if you think this is wrong.",
+    not_member: "That Discord account isn't a member of the A7OMIC server.",
+    token_exchange: 'Discord login failed to complete. Please try again.',
+    missing_code: 'Login was cancelled or interrupted. Please try again.',
+    state_mismatch: 'Login session expired or looked tampered with. Please try again.',
+    turnstile_failed: "The human-verification check didn't pass. Please try again.",
+  };
+  const err = new URLSearchParams(window.location.search).get('error');
+  if (err && errors[err]) {
+    const box = document.getElementById('errorBox');
+    box.textContent = errors[err];
+    box.style.display = 'block';
+  }
+</script>
+</body>
+</html>
+  .logo-box {
+    width: 56px; height: 56px; border-radius: 14px; overflow: hidden; margin: 0 auto 20px;
+    border: 1px solid var(--border);
+  }
+  .logo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--mint); margin-bottom: 10px;
+  }
+  h1 {
+    font-family: var(--font-display); font-size: 26px; font-weight: 800; margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  p.sub { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+  .error {
+    display: none; font-size: 12.5px; color: #fb923c; background: rgba(251,146,60,0.08);
+    border: 1px solid rgba(251,146,60,0.3); border-radius: 10px; padding: 10px 14px;
+    margin-bottom: 20px; line-height: 1.5;
+  }
+  .discord-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+    padding: 13px 20px; border-radius: 12px; border: 1px solid var(--teal);
+    background: rgba(35, 125, 151,0.12); color: var(--white); font-family: var(--font-body);
+    font-size: 14.5px; font-weight: 500; text-decoration: none; cursor: pointer;
+    transition: all 0.25s var(--ease);
+  }
+  .discord-btn:hover { background: rgba(35, 125, 151,0.22); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(35, 125, 151,0.2); }
+  .discord-btn.locked { opacity: 0.4; pointer-events: none; transform: none; box-shadow: none; }
+  .discord-btn svg { flex-shrink: 0; }
+  .footnote { margin-top: 20px; font-size: 11px; color: rgba(113, 143, 151,0.7); }
+  .agree-row, .check-row { display: flex; align-items: flex-start; gap: 10px; text-align: left; margin-bottom: 14px; padding: 2px 2px; cursor: pointer; }
+  .agree-row input, .check-row input { position: absolute; opacity: 0; width: 18px; height: 18px; margin: 0; cursor: pointer; }
+  .agree-box, .check-box {
+    flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; border-radius: 5px;
+    border: 1px solid var(--border); background: rgba(15, 46, 55,0.6);
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s var(--ease);
+  }
+  .agree-row input:checked ~ .agree-box, .check-row input:checked ~ .check-box { background: var(--teal); border-color: var(--teal); }
+  .agree-box svg, .check-box svg { width: 11px; height: 11px; opacity: 0; transform: scale(0.6); transition: all 0.15s var(--ease); color: #020203; }
+  .agree-row input:checked ~ .agree-box svg, .check-row input:checked ~ .check-box svg { opacity: 1; transform: scale(1); }
+  .agree-text, .check-text { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+  .agree-text a, .check-text a { color: var(--mint-pale); text-decoration: underline; text-underline-offset: 2px; }
+  .agree-text a:hover, .check-text a:hover { color: var(--mint); }
+  .check-row.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+  #discordBtn { margin-top: 4px; }
   .turnstile-wrap { display: flex; justify-content: center; margin: 4px 0 14px; }
   .turnstile-wrap.shake-me { animation: shake 0.3s; }
 
