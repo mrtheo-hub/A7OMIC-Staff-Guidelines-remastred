@@ -40,7 +40,7 @@
   <a class="back" href="login">&larr; Back to login</a>
   <div class="eyebrow">Legal</div>
   <h1>Terms of Service</h1>
-  <div class="updated">Last updated: August 23, 2026</div>
+  <div class="updated">Last updated: September 5, 2026</div>
 
   <p>These terms cover your use of the A7OMIC Staff Guidelines portal (the "Portal"). By checking the agreement box on the login page and signing in, you accept them.</p>
 
@@ -48,29 +48,32 @@
   <p>The Portal is an internal reference for A7OMIC staff: rules, operating guides, and role breakdowns. It exists to keep the team aligned, not as a public product or service.</p>
 
   <h2>2. Who can use it</h2>
-  <p>Access is limited to Discord accounts holding the designated staff role in the A7OMIC server. Signing in confirms that role at login and issues a session for 24 hours. If your staff role is removed, your next sign-in attempt will be rejected even if an old session is still technically active.</p>
+  <p>Access is limited to Discord accounts holding the designated staff role in the A7OMIC server. Logging in requires passing a Cloudflare Turnstile bot check and confirms your staff role at that moment; it issues a session for 24 hours, or 30 days if you chose "Remember me". If your staff role is removed, your next sign-in attempt will be rejected even if an old session is still technically active.</p>
 
   <h2>3. Your responsibilities</h2>
   <ul>
     <li>Don't share your session, screenshots of internal-only content, or portal access with anyone outside the staff team.</li>
-    <li>Don't attempt to bypass, probe, or circumvent the login gate.</li>
+    <li>Don't attempt to bypass, probe, or circumvent the login gate, the bot check, or any other access control on the Portal.</li>
     <li>Follow the rules and standards documented inside the Portal while acting as staff.</li>
     <li>Report anything that looks broken, wrong, or like a security issue to your RDOM or Executive Director.</li>
   </ul>
 
-  <h2>4. Content accuracy</h2>
+  <h2>4. Security monitoring</h2>
+  <p>The Portal automatically watches its own login flow for signs of tampering, forged links, or automated attacks, things like a manipulated session cookie or a login request that doesn't match its expected pattern. When one of those is detected, the request's IP address and browser information are logged and an alert is sent to the team, as described in the Privacy Policy. Normal logins and normal use are not monitored or logged this way.</p>
+
+  <h2>5. Content accuracy</h2>
   <p>Guidelines are updated as policy changes. You're expected to check back periodically rather than rely on a stale memory of the rules; the version live on the Portal is always the current one.</p>
 
-  <h2>5. No warranty</h2>
+  <h2>6. No warranty</h2>
   <p>The Portal is provided as an internal tool, as-is, without guarantees of uptime, accuracy at every instant, or fitness for any purpose outside its intended internal use.</p>
 
-  <h2>6. Termination</h2>
+  <h2>7. Termination</h2>
   <p>Access can be revoked at any time, with or without notice, typically by removal of the staff role. This isn't necessarily punitive; it also happens for role changes, departures, or routine cleanup.</p>
 
-  <h2>7. Changes to these terms</h2>
+  <h2>8. Changes to these terms</h2>
   <p>These terms may be updated as the Portal evolves. Material changes will be reflected in the "last updated" date above.</p>
 
-  <h2>8. Contact</h2>
+  <h2>9. Contact</h2>
   <p>Questions about these terms go to your RDOM or Executive Director.</p>
 
   <div class="note">This document was drafted for A7OMIC's internal use and isn't a substitute for independent legal advice. If the Portal ever expands beyond internal staff use, it's worth having these terms reviewed by an actual lawyer.</div>
