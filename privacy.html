@@ -9,17 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #04060a; --navy: #0a2540; --navy-mid: #123a5e; --teal: #2dd4bf;
-    --mint: #95e9d6; --mint-pale: #ddf6f1; --white: #eafdf9; --muted: #93aab3;
-    --border: rgba(45,212,191,0.2); --card-bg: rgba(8,20,34,0.7);
+    --bg: #020203; --navy: #0f2e37; --navy-mid: #103c56; --teal: #237d97;
+    --mint: #3caccd; --mint-pale: #cfe2e7; --white: #eaf5f7; --muted: #a8bcc2;
+    --border: rgba(35, 125, 151,0.2); --card-bg: rgba(15, 46, 55,0.7);
     --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--white); font-family: var(--font-body); min-height: 100vh; }
   body::before {
     content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background: radial-gradient(circle at 15% 0%, rgba(18,58,94,0.45) 0%, transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(149,233,214,0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 15% 0%, rgba(16, 60, 86,0.45) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(60, 172, 205,0.1) 0%, transparent 50%);
   }
   .wrap { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 56px 24px 100px; }
   a.back { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 13px; margin-bottom: 28px; transition: color 0.2s; }
@@ -28,12 +28,12 @@
   h1 { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
   .updated { font-size: 12.5px; color: var(--muted); margin-bottom: 40px; }
   h2 { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--mint-pale); margin: 34px 0 12px; }
-  p { font-size: 14.5px; line-height: 1.75; color: rgba(234,253,249,0.88); margin-bottom: 12px; }
+  p { font-size: 14.5px; line-height: 1.75; color: rgba(234, 245, 247,0.88); margin-bottom: 12px; }
   ul { margin: 10px 0 12px 20px; }
-  li { font-size: 14.5px; line-height: 1.75; color: rgba(234,253,249,0.88); margin-bottom: 6px; }
+  li { font-size: 14.5px; line-height: 1.75; color: rgba(234, 245, 247,0.88); margin-bottom: 6px; }
   strong { color: var(--white); }
   table { width: 100%; border-collapse: collapse; margin: 14px 0 18px; font-size: 13.5px; }
-  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: rgba(234,253,249,0.85); }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); color: rgba(234, 245, 247,0.85); }
   th { color: var(--mint-pale); font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
   .note { margin-top: 40px; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); font-size: 13px; color: var(--muted); line-height: 1.65; }
 </style>
@@ -43,7 +43,7 @@
   <a class="back" href="login">&larr; Back to login</a>
   <div class="eyebrow">Legal</div>
   <h1>Privacy Policy</h1>
-  <div class="updated">Last updated: August 23, 2026</div>
+  <div class="updated">Last updated: September 5, 2026</div>
 
   <p>This explains what the A7OMIC Staff Guidelines portal (the "Portal") collects when you sign in with Discord, and what it deliberately doesn't.</p>
 
@@ -54,34 +54,44 @@
     <tr><td>Discord user ID</td><td>Identifies your session</td></tr>
     <tr><td>Your roles in the A7OMIC server</td><td>Confirms you hold the staff role</td></tr>
   </table>
-  <p>That's it. We request the <strong>identify</strong> and <strong>guilds.members.read</strong> OAuth scopes and nothing broader.</p>
+  <p>That's it from Discord. We request the <strong>identify</strong>, <strong>guilds</strong>, and <strong>guilds.members.read</strong> OAuth scopes and nothing broader.</p>
+  <p>Separately, the login page runs a Cloudflare Turnstile check to confirm you're not a bot. Turnstile processes some technical signals from your browser (things like how your device behaves, not personal content) to make that call; Cloudflare's own Privacy Policy governs that processing, not this one.</p>
+  <p>If something on the login flow looks like tampering, a forged link, or an automated attack rather than a normal login, your <strong>IP address</strong> and <strong>browser User-Agent string</strong> are captured for that one event and sent to a private security channel we monitor. This does not happen on a normal successful login, only when something is flagged as suspicious.</p>
 
   <h2>2. What we don't collect</h2>
   <ul>
     <li>No email address</li>
     <li>No message content, DMs, or server activity</li>
-    <li>No analytics or tracking scripts</li>
-    <li>No advertising cookies or third-party trackers</li>
+    <li>No analytics or behavioral tracking on normal usage</li>
+    <li>No advertising cookies or ad-network trackers</li>
     <li>No payment or financial information</li>
   </ul>
 
   <h2>3. How it's used</h2>
-  <p>Solely to answer one question: does this Discord account currently hold the staff role in the A7OMIC server? If yes, you get in. If no, you're sent back to the login page. Nothing collected here is used for any other purpose.</p>
+  <p>Primarily to answer one question: does this Discord account currently hold the staff role in the A7OMIC server? If yes, you get in. If no, you're sent back to the login page. The security-event data described above (IP/User-Agent, only on suspicious activity) is used solely to help us notice and respond to attacks on the login system, never for tracking normal staff behavior.</p>
 
   <h2>4. How it's stored</h2>
-  <p>Your Discord ID is placed inside a single signed, <strong>httpOnly</strong> cookie stored in your own browser. That's the only place it lives. There's no database on our end, no server-side record of who's logged in, and no log of your login history beyond what your hosting provider retains for basic operational purposes.</p>
+  <p>Your Discord ID is placed inside a single signed, <strong>httpOnly</strong> cookie stored in your own browser. That's the only place your identity lives day-to-day. There's no database on our end and no server-side record of who's logged in. Security-event alerts (only for flagged suspicious activity) are delivered as one-off messages to a Discord channel, they aren't written to any database, but they do persist there under Discord's own message retention until someone manually deletes them.</p>
 
   <h2>5. Retention</h2>
-  <p>The session cookie expires automatically after <strong>24 hours</strong>. Logging out clears it immediately. After expiry or logout, nothing about that session persists anywhere.</p>
+  <p>The session cookie expires automatically after <strong>24 hours</strong>, or <strong>30 days</strong> if you checked "Remember me" at login. Logging out clears it immediately regardless of which duration was set. After expiry or logout, nothing about that session persists anywhere.</p>
 
   <h2>6. Sharing</h2>
-  <p>We don't sell, rent, or share this data with any third party. Discord's own handling of your account is governed separately by Discord's Privacy Policy, which applies regardless of whether you use this Portal.</p>
+  <p>We don't sell or rent this data to anyone. Three outside services see a limited slice of activity as a normal part of how the Portal works: <strong>Discord</strong> (identity and role check), <strong>Cloudflare</strong> (the Turnstile bot check), and, only when something suspicious is flagged, a <strong>Discord webhook</strong> we control that posts the alert. Each provider's own privacy policy governs their handling of that data on their end.</p>
 
   <h2>7. Cookies</h2>
-  <p>One cookie: the session token described above. Strictly functional, not used for tracking or advertising.</p>
+  <table>
+    <tr><th>Cookie</th><th>Purpose</th><th>Lifespan</th></tr>
+    <tr><td>staff_session</td><td>Keeps you logged in</td><td>24h, or 30d with Remember me</td></tr>
+    <tr><td>oauth_state</td><td>Blocks forged login links (CSRF)</td><td>10 minutes</td></tr>
+    <tr><td>turnstile_token</td><td>Carries the bot-check result through login</td><td>~5 minutes</td></tr>
+    <tr><td>remember_me</td><td>Flags that you asked for a 30-day session</td><td>10 minutes (consumed at login)</td></tr>
+    <tr><td>cookie_consent</td><td>Remembers your cookie preference so this notice doesn't repeat</td><td>1 year</td></tr>
+  </table>
+  <p>The cookie notice on the login page groups these into two categories: <strong>Essential</strong> (session and login security, can't be disabled) and <strong>Remember me</strong> (optional, controls whether the 30-day option is available at all). None of these are advertising or cross-site tracking cookies.</p>
 
   <h2>8. Your choices</h2>
-  <p>You can end a session anytime with the Log out link. You can also revoke this app's access entirely from your own Discord account under <strong>User Settings → Authorized Apps</strong>, which is effective immediately regardless of any active session here.</p>
+  <p>You can end a session anytime with the Log out link. You can turn off the "Remember me" cookie category from the Cookie Settings option in the login notice. You can also revoke this app's access entirely from your own Discord account under <strong>User Settings → Authorized Apps</strong>, effective immediately regardless of any active session here.</p>
 
   <h2>9. Changes to this policy</h2>
   <p>If what we collect or how we use it changes, this page will be updated and the date at the top will move.</p>
